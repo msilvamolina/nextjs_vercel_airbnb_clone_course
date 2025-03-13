@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-// Seguimos importando useRouter en caso de necesitar otras funcionalidades
 
-// Definimos la estructura de cada noticia
 interface Article {
   source: { id: string | null; name: string };
   author: string | null;
@@ -52,10 +50,18 @@ export default function BlogPage() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             const newSlug = entry.target.getAttribute("data-slug");
+            const articleTitle = entry.target.getAttribute("data-title");
+
             if (newSlug && newSlug !== currentArticle) {
               setCurrentArticle(newSlug);
-              // Actualiza la URL manualmente sin recargar la página
+
+              // 🔥 Cambia la URL sin refrescar la página
               window.history.replaceState(null, "", `/blog/${newSlug}`);
+
+              // 🔥 Cambia el título de la pestaña del navegador
+              if (articleTitle) {
+                document.title = `${articleTitle} - Blog de Noticias`;
+              }
             }
           }
         });
@@ -84,6 +90,7 @@ export default function BlogPage() {
             <h2
               className="article-title text-2xl font-semibold mb-2"
               data-slug={slug}
+              data-title={article.title} // Guardamos el título para cambiarlo después
             >
               {article.title}
             </h2>
@@ -94,8 +101,7 @@ export default function BlogPage() {
                 className="w-full h-60 object-cover mb-2"
               />
             )}
-            <p>{article.description}</p>
-            {/* Se agregaron varias líneas de descripción para aumentar el recorrido */}
+            <p>{article.content}</p>
             <p>{article.description}</p>
             <p>{article.description}</p>
             <p>{article.description}</p>
